@@ -1,33 +1,52 @@
+import { FiArrowDown, FiArrowRight, FiCheck, FiPlay } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { useSitePreferences } from "../context/sitePreferencesContext";
+
 const Hero = () => {
+  const { t } = useSitePreferences();
+
   return (
-    <header
-      id="home"
-      className="min-h-screen bg-cover bg-center flex items-center pt-24"
-      style={{
-        backgroundImage:
-          "linear-gradient(rgba(15,23,42,.7),rgba(15,23,42,.7)),url(https://images.unsplash.com/photo-1523240795612-9a054b0db644)",
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-5 text-white">
-        <h1 className="text-4xl md:text-5xl font-bold max-w-2xl mb-5">
-          Kelajagingizni{" "}
-          <span className="text-blue-500">Bright Education</span> bilan boshlang
-        </h1>
-
-        <p className="text-gray-200 max-w-xl mb-8">
-          Ingliz tili, IT, Matematika va IELTS yo‘nalishlarida zamonaviy ta’lim.
-        </p>
-
-        <div className="flex gap-4">
-          <a href="#courses" className="bg-blue-600 px-6 py-3 rounded-full font-bold">
-            Kurslarimiz
-          </a>
-          <a href="#aloqa" className="border border-white px-6 py-3 rounded-full font-bold">
-            Bog‘lanish
-          </a>
+  <header id="home" className="hero">
+    <div className="hero-glow hero-glow--one" />
+    <div className="hero-glow hero-glow--two" />
+    <div className="container hero-grid">
+      <div className="hero-copy">
+        <div className="hero-status"><span>{t("hero.admission")}</span><i /> {t("hero.eyebrow")}</div>
+        <h1>{t("hero.titleStart")} <em>{t("hero.titleAccent")}</em> {t("hero.titleEnd")}</h1>
+        <p className="hero-lead">{t("hero.lead")}</p>
+        <div className="hero-actions">
+          <Link className="button button--primary" to="/#courses">{t("hero.choose")} <FiArrowRight /></Link>
+          <Link className="button button--ghost" to="/#how-it-works"><span className="play-icon"><FiPlay /></span> {t("hero.how")}</Link>
+        </div>
+        <div className="hero-points" aria-label="Afzalliklar">
+          <span><FiCheck /> {t("hero.order")}</span>
+          <span><FiCheck /> {t("hero.noPhone")}</span>
+          <span><FiCheck /> {t("hero.parent")}</span>
         </div>
       </div>
-    </header>
+
+      <div className="hero-visual" aria-label="Bright Educationdagi dars jarayoni">
+        <div className="hero-image-wrap">
+          <img src="/bright-hero-classroom.png" alt="Ustoz bilan ta’lim olayotgan o‘quvchilar" fetchPriority="high" />
+          <div className="hero-image-overlay" />
+        </div>
+        <div className="hero-side-photo" aria-hidden="true">
+          <img src="/bright-hero-classroom.png" alt="" />
+          <span>{t("hero.practice")}</span>
+        </div>
+        <div className="floating-card floating-card--top">
+          <span className="mini-icon">Aa</span>
+          <div><b>{t("hero.directions")}</b><small>{t("hero.rightCourse")}</small></div>
+        </div>
+        <div className="floating-card floating-card--bottom">
+          <div className="avatar-stack"><i>BE</i><i>7K</i><i>+</i></div>
+          <div><b>{t("hero.trust")}</b><small>{t("hero.promise")}</small></div>
+        </div>
+        <div className="hero-scribble" aria-hidden="true">✦</div>
+      </div>
+    </div>
+    <Link className="scroll-cue" to="/#numbers" aria-label="Pastga o‘tish"><FiArrowDown /></Link>
+  </header>
   );
 };
 

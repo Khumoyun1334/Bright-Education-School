@@ -1,29 +1,37 @@
-import { whyUs } from "../data/whyUs";
+import { FiBarChart2, FiCalendar, FiMessageCircle, FiUserCheck } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { useSitePreferences } from "../context/sitePreferencesContext";
+
+const benefits = [
+  { icon: <FiUserCheck />, number: "01", title: "Kuchli ustozlar", text: "Murakkab mavzuni sodda tushuntiradigan, natijani kuzatib boradigan ustozlar." },
+  { icon: <FiBarChart2 />, number: "02", title: "Aniq o‘sish tizimi", text: "Boshlang‘ich diagnostikadan yakuniy sinovgacha rivojlanishingiz ko‘rinib turadi." },
+  { icon: <FiMessageCircle />, number: "03", title: "Ko‘proq amaliyot", text: "Faqat nazariya emas — darsda savol, mashq va faol ishtirok uchun ko‘proq vaqt." },
+  { icon: <FiCalendar />, number: "04", title: "Qulay o‘quv tartibi", text: "Maqsadingiz va darajangizga mos guruh hamda tushunarli dars rejasi." },
+];
 
 const WhyUs = () => {
+  const { tr } = useSitePreferences();
   return (
-    <section id="about" className="py-20 max-w-7xl mx-auto px-5">
-      <h2 className="text-3xl font-bold text-center mb-12">
-        Nega Bright Education?
-      </h2>
-
-      <div className="grid md:grid-cols-3 gap-8">
-        {whyUs.map((item, i) => (
-          <div
-            key={i}
-            className="bg-white rounded-2xl shadow-lg p-6 text-center hover:-translate-y-3 transition"
-          >
-            <img
-              src={item.img}
-              alt={item.title}
-              className="h-40 w-full object-cover rounded-xl mb-5"
-            />
-            <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-            <p className="text-gray-600">{item.text}</p>
-          </div>
+  <section id="about" className="section why-section">
+    <div className="container why-grid">
+      <div className="why-intro">
+        <span className="section-kicker section-kicker--light">{tr("Nega aynan biz?")}</span>
+        <h2>{tr("O‘qish jarayoni siz uchun ishlasin.")}</h2>
+        <p>{tr("Yaxshi ta’lim faqat dars o‘tish emas. Biz o‘quvchining maqsadini tushunish, mos reja tuzish va yo‘l davomida yordam berishga e’tibor qilamiz.")}</p>
+        <Link to="/#aloqa" className="text-link text-link--light">{tr("Markaz bilan tanishish")} <span>↗</span></Link>
+      </div>
+      <div className="benefit-grid">
+        {benefits.map((item) => (
+          <article className="benefit-card" key={item.number}>
+            <span className="benefit-number">{item.number}</span>
+            <div className="benefit-icon">{item.icon}</div>
+            <h3>{tr(item.title)}</h3>
+            <p>{tr(item.text)}</p>
+          </article>
         ))}
       </div>
-    </section>
+    </div>
+  </section>
   );
 };
 
