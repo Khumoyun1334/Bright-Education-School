@@ -11,6 +11,7 @@ const links = [
   ["nav.courses", "courses"],
   ["nav.results", "results"],
   ["nav.team", "team"],
+  ["nav.rules", "rules"],
   ["nav.contact", "contact", true],
 ];
 

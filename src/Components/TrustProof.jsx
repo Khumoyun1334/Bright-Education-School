@@ -1,4 +1,5 @@
-import { FiArrowUpRight, FiBarChart2, FiCheckCircle, FiFileText, FiShield, FiUsers } from "react-icons/fi";
+import { useEffect, useRef, useState } from "react";
+import { FiArrowLeft, FiArrowRight, FiArrowUpRight, FiBarChart2, FiBookOpen, FiCheckCircle, FiClipboard, FiFileText, FiShield, FiTarget, FiUsers } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useSitePreferences } from "../context/sitePreferencesContext";
 
@@ -8,23 +9,89 @@ const proofItems = [
   { icon: <FiUsers />, title: "Ota-ona bilan doimiy aloqa", text: "Muhim o‘zgarishlar va bolaning o‘sishi muntazam yetkaziladi." },
 ];
 
+const controlStages = [
+  {
+    icon: <FiClipboard />,
+    title: "Boshlang‘ich diagnostika",
+    text: "O‘quvchining hozirgi bilimi, kuchli tomonlari va rivojlanishi kerak bo‘lgan mavzular aniqlanadi.",
+    note: "Daraja va maqsad aniqlanadi",
+  },
+  {
+    icon: <FiTarget />,
+    title: "Individual o‘quv reja",
+    text: "Natijaga olib boradigan mavzular, mashqlar va nazorat sanalari tushunarli rejaga joylanadi.",
+    note: "Aniq yo‘l xaritasi tuziladi",
+  },
+  {
+    icon: <FiBarChart2 />,
+    title: "Oylik monitoring",
+    text: "Davomat, topshiriqlar va sinov natijalari tahlil qilinib, ota-onaga qisqa hisobot beriladi.",
+    note: "O‘sish muntazam kuzatiladi",
+  },
+  {
+    icon: <FiCheckCircle />,
+    title: "Yakuniy natija va tavsiya",
+    text: "Erishilgan natija baholanadi va o‘quvchining keyingi maqsadi uchun ustoz tavsiyasi beriladi.",
+    note: "Keyingi qadam belgilanadi",
+  },
+];
+
 const TrustProof = () => {
   const { tr } = useSitePreferences();
+  const [activeStage, setActiveStage] = useState(0);
+  const [bookVisible, setBookVisible] = useState(false);
+  const bookRef = useRef(null);
+
+  useEffect(() => {
+    if (!bookRef.current) return undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setBookVisible(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.45 });
+    observer.observe(bookRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!bookVisible || activeStage >= controlStages.length - 1) return undefined;
+    const timer = window.setTimeout(() => setActiveStage((stage) => stage + 1), 3600);
+    return () => window.clearTimeout(timer);
+  }, [activeStage, bookVisible]);
+
+  const showStage = (index) => setActiveStage(Math.max(0, Math.min(index, controlStages.length - 1)));
 
   return (
-    <section className="section trust-proof-section" aria-labelledby="trust-proof-title">
+    <section id="trust-proof" className="section trust-proof-section" aria-labelledby="trust-proof-title">
       <div className="container trust-proof">
-        <div className="trust-proof__visual">
+        <div className="trust-proof__visual" ref={bookRef}>
           <span className="trust-proof__label"><FiShield /> {tr("Ishonch markazi")}</span>
-          <div className="document-card document-card--back" aria-hidden="true" />
-          <article className="document-card">
-            <div className="document-card__top"><span>BE</span><small>{tr("OTA-ONA UCHUN")}</small></div>
-            <FiCheckCircle className="document-card__seal" aria-hidden="true" />
-            <h3>{tr("Ochiq va shaffof ta’lim")}</h3>
-            <p>{tr("Hujjatlar, o‘quv rejasi, to‘lov va ichki tartib bo‘yicha ma’lumotlar qabulxonada taqdim etiladi.")}</p>
-            <div className="document-card__lines"><i /><i /><i /></div>
-          </article>
-          <div className="trust-proof__score"><strong>4</strong><span>{tr("nazorat bosqichi")}</span></div>
+          <div className="document-book" aria-live="polite">
+            <div className="document-book__cover" aria-hidden="true"><FiBookOpen /></div>
+            {controlStages.map((stage, index) => (
+              <article
+                className={`document-page ${index < activeStage ? "document-page--turned" : ""} ${index === activeStage ? "document-page--active" : ""}`}
+                style={{ "--page-offset": `${index * 3}px`, "--page-rotation": `${(index - 1) * 0.45}deg`, zIndex: controlStages.length - index }}
+                aria-hidden={index !== activeStage}
+                key={stage.title}
+              >
+                <div className="document-card__top"><span>BE</span><small>{tr("OTA-ONA UCHUN")}</small></div>
+                <div className="document-page__stage"><span>{String(index + 1).padStart(2, "0")}</span><small>{tr("bosqich")}</small></div>
+                <div className="document-page__icon">{stage.icon}</div>
+                <h3>{tr(stage.title)}</h3>
+                <p>{tr(stage.text)}</p>
+                <div className="document-page__footer"><i /><strong>{tr(stage.note)}</strong><span>{index + 1} / {controlStages.length}</span></div>
+              </article>
+            ))}
+          </div>
+          <div className="document-book__controls">
+            <button type="button" onClick={() => showStage(activeStage - 1)} disabled={activeStage === 0} aria-label={tr("Oldingi bosqich")}><FiArrowLeft /></button>
+            <div>
+              {controlStages.map((stage, index) => <button className={index === activeStage ? "is-active" : ""} type="button" onClick={() => showStage(index)} aria-label={`${index + 1} ${tr("bosqich")}`} key={stage.title} />)}
+            </div>
+            <button type="button" onClick={() => showStage(activeStage + 1)} disabled={activeStage === controlStages.length - 1} aria-label={tr("Keyingi bosqich")}><FiArrowRight /></button>
+          </div>
         </div>
 
         <div className="trust-proof__content">
