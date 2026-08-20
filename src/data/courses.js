@@ -8,6 +8,7 @@ export const courses = [
     teacher: { name: "Bright English jamoasi", role: "Ingliz tili ustozlari", note: "Daraja va yoshga qarab mos ustoz biriktiriladi." },
     skills: ["Erkin gapirish va to‘g‘ri talaffuz", "Grammatikani amaliy qo‘llash", "Tinglab tushunish va so‘z boyligi", "Muntazam daraja nazorati"],
     program: ["Darajani aniqlash", "Asosiy til ko‘nikmalari", "Amaliy speaking mashg‘ulotlari", "Yakuniy sinov va tavsiyalar"],
+    groups: [{ name: "English A1", age: "10–14 yosh", schedule: "Du–Chor–Ju · 14:00", startDate: "2-sentabr, 2026", seats: "4 ta joy", branch: "Rishton filiali" }, { name: "English A2", age: "15+ yosh", schedule: "Se–Pay–Sha · 17:00", startDate: "7-sentabr, 2026", seats: "6 ta joy", branch: "Rishton filiali" }],
   },
   {
     id: "math", title: "Matematika", eyebrow: "Maktab va imtihon", accent: "mint",
@@ -18,6 +19,7 @@ export const courses = [
     teacher: { name: "Bright Math jamoasi", role: "Matematika ustozlari", note: "O‘quvchining sinfi va maqsadiga mos mutaxassis tanlanadi." },
     skills: ["Algebraik masalalarni yechish", "Geometrik fikrlash", "Formulalarni tushunib qo‘llash", "Xatolar ustida tizimli ishlash"],
     program: ["Boshlang‘ich diagnostika", "Mavzularni bosqichma-bosqich o‘rganish", "Masala yechish amaliyoti", "Sinov va natija tahlili"],
+    groups: [{ name: "Math 7", age: "12–14 yosh", schedule: "Du–Chor–Ju · 16:00", startDate: "3-sentabr, 2026", seats: "5 ta joy", branch: "Rishton filiali" }],
   },
   {
     id: "ielts", title: "IELTS tayyorlov", eyebrow: "Maqsadli tayyorlov", accent: "lime",
@@ -28,6 +30,7 @@ export const courses = [
     teacher: { name: "Bright IELTS jamoasi", role: "IELTS instruktorlari", note: "Daraja testi natijasiga ko‘ra mos guruh va ustoz belgilanadi." },
     skills: ["Reading va Listening strategiyalari", "Writing tuzilmasi va tahlili", "Speaking bo‘yicha amaliy sinov", "Vaqtni to‘g‘ri boshqarish"],
     program: ["Daraja va maqsad tahlili", "Har bir skill bo‘yicha strategiya", "Haftalik amaliy topshiriqlar", "Mock test va individual tahlil"],
+    groups: [{ name: "IELTS Foundation", age: "15+ yosh", schedule: "Du–Se–Pay–Sha · 18:00", startDate: "5-sentabr, 2026", seats: "3 ta joy", branch: "Rishton filiali" }],
   },
   {
     id: "russian", title: "Rus tili", eyebrow: "Erkin muloqot", accent: "forest",
@@ -38,6 +41,7 @@ export const courses = [
     teacher: { name: "Bright Russian jamoasi", role: "Rus tili ustozlari", note: "Yosh va boshlang‘ich bilimga qarab mos ustoz biriktiriladi." },
     skills: ["To‘g‘ri talaffuz", "Kundalik muloqot", "Asosiy grammatika", "Matnni o‘qish va tushunish"],
     program: ["Boshlang‘ich suhbat", "Lug‘at va talaffuz", "Grammatik konstruksiyalar", "Amaliy suhbat va nazorat"],
+    groups: [{ name: "Russian Start", age: "9–13 yosh", schedule: "Se–Pay–Sha · 15:00", startDate: "8-sentabr, 2026", seats: "7 ta joy", branch: "Rishton filiali" }],
   },
   {
     id: "it", title: "IT savodxonlik", eyebrow: "Bolalar uchun", accent: "sage",
@@ -48,6 +52,7 @@ export const courses = [
     teacher: { name: "Bright IT jamoasi", role: "Amaliyotchi IT ustozlari", note: "Mashg‘ulotlar kompyuter xonasida amaliy tarzda o‘tiladi." },
     skills: ["Kompyuterdan xavfsiz foydalanish", "Fayl va hujjatlar bilan ishlash", "Internet savodxonligi", "Taqdimot va kichik loyihalar"],
     program: ["Kompyuter asoslari", "Ofis dasturlari", "Internet xavfsizligi", "Yakuniy amaliy loyiha"],
+    groups: [{ name: "Digital Kids", age: "10–14 yosh", schedule: "Chor–Sha · 14:00", startDate: "9-sentabr, 2026", seats: "4 ta joy", branch: "Rishton filiali" }],
   },
   {
     id: "preschool", title: "Maktabga tayyorlov", eyebrow: "5–7 yosh", accent: "soft",
@@ -58,5 +63,6 @@ export const courses = [
     teacher: { name: "Bright Kids jamoasi", role: "Boshlang‘ich ta’lim ustozlari", note: "Bolalar bilan ishlash metodikasini biladigan ustozlar dars olib boradi." },
     skills: ["Harf va tovushlarni tanish", "Sanash va sodda mantiq", "Diqqat va xotira", "Jamoada ishlash odobi"],
     program: ["Bolaning tayyorgarligini aniqlash", "Savodga tayyorlash", "Mantiqiy mashg‘ulotlar", "Maktabga moslashuv"],
+    groups: [{ name: "Bright Kids", age: "5–7 yosh", schedule: "Du–Chor–Ju · 10:00", startDate: "2-sentabr, 2026", seats: "5 ta joy", branch: "Rishton filiali" }],
   },
 ];

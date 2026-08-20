@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FiArrowUpRight, FiMenu, FiMoon, FiPhone, FiSearch, FiSun, FiX } from "react-icons/fi";
+import { FiArrowRight, FiArrowUpRight, FiAward, FiBarChart2, FiChevronDown, FiMenu, FiMoon, FiPhone, FiSearch, FiSun, FiX } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useSitePreferences } from "../context/sitePreferencesContext";
 import SearchDialog from "./SearchDialog";
@@ -12,7 +12,7 @@ const links = [
   ["nav.results", "results"],
   ["nav.team", "team"],
   ["nav.rules", "rules"],
-  ["nav.contact", "contact", true],
+  ["nav.contact", "contact", "/contact"],
 ];
 
 const Navbar = () => {
@@ -26,6 +26,12 @@ const Navbar = () => {
     ? activeSection
     : location.pathname.startsWith("/courses/")
       ? "courses"
+      : location.pathname.startsWith("/news/")
+        ? "news"
+        : location.pathname === "/mandate"
+          ? "results"
+          : location.pathname === "/documents"
+            ? "rules"
       : location.pathname === "/contact"
         ? "contact"
         : "";
@@ -45,7 +51,7 @@ const Navbar = () => {
   useEffect(() => {
     if (location.pathname !== "/") return undefined;
 
-    const sectionIds = links.filter(([, , page]) => !page).map(([, id]) => id);
+    const sectionIds = links.filter(([, , path]) => !path).map(([, id]) => id);
     let frameId;
 
     const updateActiveSection = () => {
@@ -111,15 +117,18 @@ const Navbar = () => {
         </Link>
 
         <div className="nav-links">
-          {links.map(([labelKey, id, page]) => (
-            <Link
-              className={currentActiveSection === id ? "nav-link--active" : undefined}
-              to={page ? "/contact" : hrefFor(id)}
-              key={id}
-              aria-current={currentActiveSection === id ? "location" : undefined}
-            >
-              {t(labelKey)}
-            </Link>
+          {links.map(([labelKey, id, path]) => id === "results" ? (
+            <div className="nav-dropdown" key={id}>
+              <Link className={currentActiveSection === id ? "nav-link--active" : undefined} to={hrefFor(id)} aria-current={currentActiveSection === id ? "location" : undefined} aria-haspopup="true">
+                {t(labelKey)} <FiChevronDown />
+              </Link>
+              <div className="nav-dropdown__menu">
+                <Link to={hrefFor("results")}><span><FiBarChart2 /></span><div><strong>{t("nav.studentResults")}</strong><small>{t("nav.resultsHint")}</small></div><FiArrowRight /></Link>
+                <Link className={location.pathname === "/mandate" ? "nav-dropdown__active" : undefined} to="/mandate"><span><FiAward /></span><div><strong>{t("nav.mandateCheck")}</strong><small>{t("nav.mandateHint")}</small></div><FiArrowRight /></Link>
+              </div>
+            </div>
+          ) : (
+            <Link className={currentActiveSection === id ? "nav-link--active" : undefined} to={path || hrefFor(id)} key={id} aria-current={currentActiveSection === id ? "location" : undefined}>{t(labelKey)}</Link>
           ))}
         </div>
 
@@ -142,16 +151,11 @@ const Navbar = () => {
       </div>
 
       <div id="mobile-navigation" className={`mobile-menu ${open ? "mobile-menu--open" : ""}`}>
-        {links.map(([labelKey, id, page]) => (
-          <Link
-            className={currentActiveSection === id ? "nav-link--active" : undefined}
-            to={page ? "/contact" : hrefFor(id)}
-            key={id}
-            onClick={() => setOpen(false)}
-            aria-current={currentActiveSection === id ? "location" : undefined}
-          >
-            {t(labelKey)}
-          </Link>
+        {links.map(([labelKey, id, path]) => (
+          <span className="mobile-menu__group" key={id}>
+            <Link className={currentActiveSection === id ? "nav-link--active" : undefined} to={path || hrefFor(id)} onClick={() => setOpen(false)} aria-current={currentActiveSection === id ? "location" : undefined}>{t(labelKey)}</Link>
+            {id === "results" && <Link className={`mobile-mandate-link ${location.pathname === "/mandate" ? "mobile-mandate-link--active" : ""}`} to="/mandate" onClick={() => setOpen(false)}><FiAward /> {t("nav.mandateCheck")} <FiArrowRight /></Link>}
+          </span>
         ))}
         {preferences(true)}
         <Link className="mobile-menu__cta" to={hrefFor("aloqa")} onClick={() => setOpen(false)}>

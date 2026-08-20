@@ -1,9 +1,11 @@
 import { FiArrowDown, FiArrowRight, FiCheck, FiPlay } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import { useContent } from "../context/contentContext";
 
 const Hero = () => {
   const { t } = useSitePreferences();
+  const { content: { settings } } = useContent();
 
   return (
   <header id="home" className="hero">
@@ -11,9 +13,9 @@ const Hero = () => {
     <div className="hero-glow hero-glow--two" />
     <div className="container hero-grid">
       <div className="hero-copy">
-        <div className="hero-status"><span>{t("hero.admission")}</span><i /> {t("hero.eyebrow")}</div>
-        <h1>{t("hero.titleStart")} <em>{t("hero.titleAccent")}</em> {t("hero.titleEnd")}</h1>
-        <p className="hero-lead">{t("hero.lead")}</p>
+        <div className="hero-status"><span>{settings.heroBadge || t("hero.admission")}</span><i /> {t("hero.eyebrow")}</div>
+        <h1>{settings.heroTitleStart || t("hero.titleStart")} <em>{settings.heroTitleAccent || t("hero.titleAccent")}</em> {settings.heroTitleEnd || t("hero.titleEnd")}</h1>
+        <p className="hero-lead">{settings.heroLead || t("hero.lead")}</p>
         <div className="hero-actions">
           <Link className="button button--primary" to="/#courses">{t("hero.choose")} <FiArrowRight /></Link>
           <Link className="button button--ghost" to="/#how-it-works"><span className="play-icon"><FiPlay /></span> {t("hero.how")}</Link>
@@ -27,11 +29,11 @@ const Hero = () => {
 
       <div className="hero-visual" aria-label="Bright Educationdagi dars jarayoni">
         <div className="hero-image-wrap">
-          <img src="/bright-hero-classroom.png" alt="Ustoz bilan ta’lim olayotgan o‘quvchilar" fetchPriority="high" />
+          <img src={settings.heroImage} alt="Ustoz bilan ta’lim olayotgan o‘quvchilar" fetchPriority="high" />
           <div className="hero-image-overlay" />
         </div>
         <div className="hero-side-photo" aria-hidden="true">
-          <img src="/bright-hero-classroom.png" alt="" />
+          <img src={settings.heroImage} alt="" />
           <span>{t("hero.practice")}</span>
         </div>
         <div className="floating-card floating-card--top">

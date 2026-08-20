@@ -1,10 +1,11 @@
 import { FiArrowRight, FiAward, FiBookOpen, FiBriefcase, FiUsers } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { team } from "../data/team";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import { useContent } from "../context/contentContext";
 
 const Team = () => {
   const { t, tr } = useSitePreferences();
+  const { content: { team } } = useContent();
   return (
   <section id="team" className="section team-section">
     <div className="container">

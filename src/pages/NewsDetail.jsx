@@ -1,11 +1,13 @@
 import { FiArrowLeft, FiArrowRight, FiBell, FiCalendar, FiCheck, FiShare2 } from "react-icons/fi";
 import { Link, useParams } from "react-router-dom";
-import { news } from "../data/news";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import Seo from "../Components/Seo";
+import { useContent } from "../context/contentContext";
 
 const NewsDetail = () => {
   const { id } = useParams();
   const { tr } = useSitePreferences();
+  const { content: { news } } = useContent();
   const item = news.find((entry) => entry.id === id);
 
   if (!item) {
@@ -20,9 +22,11 @@ const NewsDetail = () => {
   }
 
   const related = news.filter((entry) => entry.id !== id).slice(0, 2);
+  const actionHref = item.href?.startsWith("/") ? item.href : `/${item.href || "#aloqa"}`;
 
   return (
     <main className="news-detail-page">
+      <Seo title={tr(item.title)} description={tr(item.description)} path={`/news/${item.id}`} jsonLd={{ "@context": "https://schema.org", "@type": "NewsArticle", headline: tr(item.title), datePublished: item.isoDate, image: item.image, publisher: { "@type": "EducationalOrganization", name: "Bright Education School" } }} />
       <header className="news-detail-hero">
         <div className="container">
           <Link className="back-link" to="/#news"><FiArrowLeft /> {tr("Barcha yangiliklar")}</Link>
@@ -47,7 +51,7 @@ const NewsDetail = () => {
             </div>
             <div className="news-article__action">
               <div><FiShare2 /><span><small>{tr("Keyingi qadam")}</small><strong>{tr(item.action)}</strong></span></div>
-              <Link className="button button--dark" to={`/${item.href}`}>{tr(item.action)} <FiArrowRight /></Link>
+              <Link className="button button--dark" to={actionHref}>{tr(item.action)} <FiArrowRight /></Link>
             </div>
           </article>
 

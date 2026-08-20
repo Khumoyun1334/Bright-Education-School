@@ -2,31 +2,17 @@ import { useEffect, useState } from "react";
 import { FiArrowUpRight, FiMessageCircle, FiPlay, FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import { useContent } from "../context/contentContext";
 
-const stories = [
-  {
-    name: "Madina onasi",
-    result: "Ingliz tili · 8 oy",
-    quote: "Farzandim darsga o‘zi xursand bo‘lib boradi, natijalarini esa har oy ko‘rib turamiz.",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    name: "Javohirning otasi",
-    result: "Matematika · 6 oy",
-    quote: "Eng yoqqan tomoni — tartib va ustozning ota-ona bilan doimiy aloqasi.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    name: "Sarvinoz",
-    result: "IELTS · 7.0",
-    quote: "Reja aniq bo‘lgani uchun qayerda xato qilayotganimni va qanday o‘sayotganimni bildim.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=85",
-  },
-];
+const youtubeEmbed = (url = "") => {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^?&/]+)/);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+};
 
 const VideoStories = () => {
   const [activeStory, setActiveStory] = useState(null);
   const { tr } = useSitePreferences();
+  const { content: { stories } } = useContent();
 
   useEffect(() => {
     if (!activeStory) return undefined;
@@ -63,8 +49,8 @@ const VideoStories = () => {
         <div className="story-modal" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setActiveStory(null)}>
           <article role="dialog" aria-modal="true" aria-labelledby="story-person">
             <button type="button" onClick={() => setActiveStory(null)} aria-label={tr("Yopish")}><FiX /></button>
-            <div className="story-modal__media"><img src={activeStory.image} alt={tr(activeStory.name)} /><span><FiPlay /></span></div>
-            <div className="story-modal__copy"><small>{tr("VIDEO UCHUN TAYYOR JOY")}</small><h3 id="story-person">{tr(activeStory.name)}</h3><q>{tr(activeStory.quote)}</q><p>{tr("Haqiqiy video fayl yoki YouTube havolasini ma’lumotlar qismiga qo‘shganingizda shu oynada video ochiladi.")}</p></div>
+            <div className="story-modal__media">{activeStory.video ? (youtubeEmbed(activeStory.video) ? <iframe src={youtubeEmbed(activeStory.video)} title={tr(activeStory.name)} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen /> : <video src={activeStory.video} controls autoPlay poster={activeStory.image} />) : <><img src={activeStory.image} alt={tr(activeStory.name)} /><span><FiPlay /></span></>}</div>
+            <div className="story-modal__copy"><small>{tr(activeStory.video ? "VIDEO FIKR" : "VIDEO UCHUN TAYYOR JOY")}</small><h3 id="story-person">{tr(activeStory.name)}</h3><q>{tr(activeStory.quote)}</q>{!activeStory.video && <p>{tr("Haqiqiy video fayl yoki YouTube havolasini ma’lumotlar qismiga qo‘shganingizda shu oynada video ochiladi.")}</p>}</div>
           </article>
         </div>
       )}

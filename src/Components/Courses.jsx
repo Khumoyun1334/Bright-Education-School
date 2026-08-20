@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiArrowUpRight, FiClock, FiUsers } from "react-icons/fi";
-import { courses } from "../data/courses";
+import { FiArrowRight, FiArrowUpRight, FiCalendar, FiClock, FiUsers } from "react-icons/fi";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import { useContent } from "../context/contentContext";
 
 const Courses = () => {
   const { t, tr } = useSitePreferences();
+  const { content: { courses } } = useContent();
   return (
   <section id="courses" className="section courses-section">
     <div className="container">
@@ -28,6 +29,7 @@ const Courses = () => {
                 <span><FiClock /> {tr(course.duration)}</span>
                 <span><FiUsers /> {tr(course.lessons)}</span>
               </div>
+              {course.groups?.[0] && <div className="course-next-group"><span><FiCalendar /> {tr("Yaqin guruh")}</span><b>{tr(course.groups[0].startDate)}</b><small>{tr(course.groups[0].seats)}</small></div>}
               <div className="course-footer">
                 <div><small>{t("courses.price")}</small><b>{tr(course.price)}</b></div>
               </div>

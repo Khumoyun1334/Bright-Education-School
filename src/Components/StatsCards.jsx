@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { FiAward, FiBookOpen, FiTrendingUp, FiUsers } from "react-icons/fi";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import { useContent } from "../context/contentContext";
 
-const stats = [
-  { value: "7 500+", label: "bitiruvchi", note: "shu kungacha ta’lim olgan", icon: <FiUsers /> },
-  { value: "7 000+", label: "sertifikat", note: "o‘quvchilarga topshirilgan", icon: <FiAward /> },
-  { value: "6", label: "ta’lim yo‘nalishi", note: "har xil yosh va maqsadlar uchun", icon: <FiBookOpen /> },
-  { value: "Doimiy", label: "natija tahlili", note: "o‘sishni kuzatish tizimi", icon: <FiTrendingUp /> },
-];
+const icons = { users: <FiUsers />, award: <FiAward />, book: <FiBookOpen />, trend: <FiTrendingUp /> };
 
 const AnimatedValue = ({ value }) => {
   const ref = useRef(null);
@@ -51,12 +47,13 @@ const AnimatedValue = ({ value }) => {
 
 export default function StatsCards() {
   const { tr } = useSitePreferences();
+  const { content: { stats } } = useContent();
   return (
     <section id="numbers" className="stats-section" aria-label="Bright Education">
       <div className="container stats-grid">
         {stats.map((item) => (
           <article className="stat-card" key={item.label}>
-            <div className="stat-icon">{item.icon}</div>
+            <div className="stat-icon">{icons[item.icon] || <FiTrendingUp />}</div>
             <div><AnimatedValue value={tr(item.value)} /><b>{tr(item.label)}</b><span>{tr(item.note)}</span></div>
           </article>
         ))}

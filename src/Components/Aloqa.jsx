@@ -1,24 +1,27 @@
 import { useState } from "react";
 import { FiArrowRight, FiCheckCircle, FiClock, FiMapPin } from "react-icons/fi";
-import { courses } from "../data/courses";
 import { useSitePreferences } from "../context/sitePreferencesContext";
 import { submitInquiry } from "../services/contactService";
+import { Link } from "react-router-dom";
+import { useContent } from "../context/contentContext";
 
 const Aloqa = () => {
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
   const { tr } = useSitePreferences();
+  const { content: { courses, settings } } = useContent();
   const selectedCourse = new URLSearchParams(window.location.search).get("course") || "";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form));
+    data.courseTitle = courses.find((course) => course.id === data.course)?.title || "Maslahat kerak";
     const phoneDigits = data.phone.replace(/\D/g, "");
 
-    if (!data.name.trim() || phoneDigits.length < 9 || !data.course) {
+    if (!data.name.trim() || phoneDigits.length < 9 || !data.course || data.consent !== "on") {
       setStatus("error");
-      setMessage("Ism, kurs va to‘g‘ri telefon raqamini kiriting.");
+      setMessage("Ism, kurs, to‘g‘ri telefon raqami va rozilik belgisini kiriting.");
       return;
     }
 
@@ -26,11 +29,9 @@ const Aloqa = () => {
     setMessage("");
 
     try {
-      const result = await submitInquiry(data);
+      await submitInquiry(data);
       setStatus("success");
-      setMessage(result.local
-        ? "Ariza ushbu qurilmada saqlandi. Onlayn yuborish uchun administrator server manzilini ulashi kerak."
-        : "Rahmat! Arizangiz qabul qilindi. Tez orada siz bilan bog‘lanamiz.");
+      setMessage("Rahmat! Arizangiz Telegram orqali administratorga yuborildi. Tez orada siz bilan bog‘lanamiz.");
       form.reset();
     } catch {
       setStatus("error");
@@ -47,10 +48,10 @@ const Aloqa = () => {
           <p>{tr("Qisqa formani to‘ldiring. Maqsadingizni tushunib, sizga mos kurs va guruh bo‘yicha bepul maslahat beramiz.")}</p>
           <div className="contact-info">
             <div><span><FiClock /></span><p><b>{tr("Tezkor maslahat")}</b><small>{tr("Administrator siz bilan bog‘lanadi")}</small></p></div>
-            <div><span><FiMapPin /></span><p><b>{tr("Rishton shahri")}</b><small>{tr("Markaz lokatsiyasi xaritada ko‘rsatilgan")}</small></p></div>
+            <div><span><FiMapPin /></span><p><b>{tr(settings.address)}</b><small>{tr("Markaz lokatsiyasi xaritada ko‘rsatilgan")}</small></p></div>
           </div>
           <div className="contact-mini-map">
-            <iframe title="Bright Education manzili" src="https://www.google.com/maps?q=Rishton%20Tibbiyot%20Texnikumi&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+            <iframe title="Bright Education manzili" src={`https://www.google.com/maps?q=${encodeURIComponent(settings.mapQuery)}&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           </div>
         </div>
 
@@ -73,11 +74,15 @@ const Aloqa = () => {
               <option value="evening">{tr("Kechqurun")}</option>
             </select>
           </label>
+          <label className="form-honeypot" aria-hidden="true">Website<input name="website" type="text" tabIndex="-1" autoComplete="off" /></label>
+          <label className="form-consent">
+            <input name="consent" type="checkbox" required />
+            <span>{tr("Shaxsiy ma’lumotlarimdan arizam bo‘yicha bog‘lanish uchun foydalanishga roziman.")} <Link to="/privacy">{tr("Maxfiylik siyosati")}</Link></span>
+          </label>
           <button className="form-submit" type="submit" disabled={status === "loading"}>
             {status === "loading" ? tr("Yuborilmoqda...") : tr("Bepul maslahat olish")} <FiArrowRight />
           </button>
           {message && <p className={`form-message form-message--${status}`} role="status">{status === "success" && <FiCheckCircle />} {tr(message)}</p>}
-          <p className="form-privacy">{tr("Yuborish orqali ma’lumotlaringizdan bog‘lanish maqsadida foydalanishga rozilik bildirasiz.")}</p>
         </form>
       </div>
     </section>

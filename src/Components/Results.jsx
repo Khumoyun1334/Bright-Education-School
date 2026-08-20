@@ -1,16 +1,16 @@
 import { FiArrowRight, FiClock, FiMessageCircle, FiTrendingUp } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { courseProgress, monthlyProgress, parentQuotes, results } from "../data/results";
 import { useSitePreferences } from "../context/sitePreferencesContext";
-
-const linePoints = monthlyProgress.map((item, index) => {
-  const x = 42 + index * (516 / (monthlyProgress.length - 1));
-  const y = 210 - item.value * 1.72;
-  return { ...item, x, y };
-});
+import { useContent } from "../context/contentContext";
 
 const Results = () => {
   const { t, tr } = useSitePreferences();
+  const { content: { courseProgress, monthlyProgress, parentQuotes, results } } = useContent();
+  const linePoints = monthlyProgress.map((item, index) => {
+    const x = 42 + index * (516 / Math.max(monthlyProgress.length - 1, 1));
+    const y = 210 - item.value * 1.72;
+    return { ...item, x, y };
+  });
   return (
   <section id="results" className="section results-section">
     <div className="container">
@@ -78,10 +78,12 @@ const Results = () => {
         </div>
       </section>
 
+      <Link className="mandate-check-link" to="/mandate"><span><FiTrendingUp /></span><div><small>{tr("Haftalik mock test")}</small><strong>{tr("Natijani to‘liq ism-familiya orqali tekshiring")}</strong></div><FiArrowRight /></Link>
+
       <div className="parent-voices">
         <div className="parent-voices__title"><span><FiMessageCircle /></span><div><small>{tr("Ota-onalar qadrlaydigan jihatlar")}</small><strong>{tr("Ishonch, tartib va doimiy aloqa.")}</strong></div></div>
         <div className="parent-voices__quotes">
-          {parentQuotes.map((quote) => <p key={quote}>“{tr(quote)}”</p>)}
+          {parentQuotes.map((quote) => <p key={quote.text || quote}>“{tr(quote.text || quote)}”</p>)}
         </div>
         <Link to="/#aloqa" aria-label="Maslahat olish"><FiArrowRight /></Link>
       </div>

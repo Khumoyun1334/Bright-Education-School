@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FiArrowLeft, FiArrowRight, FiBookOpen, FiCheck, FiClock, FiEdit3, FiLayers, FiMessageCircle, FiUserCheck, FiUsers } from "react-icons/fi";
-import { courses } from "../data/courses";
+import { FiArrowLeft, FiArrowRight, FiBookOpen, FiCalendar, FiCheck, FiClock, FiEdit3, FiLayers, FiMapPin, FiMessageCircle, FiUserCheck, FiUsers } from "react-icons/fi";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import Seo from "../Components/Seo";
+import { useContent } from "../context/contentContext";
 
 const CourseDetail = () => {
   const { id } = useParams();
   const { tr } = useSitePreferences();
+  const { content: { courses } } = useContent();
   const course = courses.find((item) => item.id === id);
 
   useEffect(() => {
@@ -26,6 +28,7 @@ const CourseDetail = () => {
 
   return (
     <main className={`course-detail course-detail--${course.accent}`}>
+      <Seo title={tr(course.title)} description={tr(course.description)} path={`/courses/${course.id}`} jsonLd={{ "@context": "https://schema.org", "@type": "Course", name: tr(course.title), description: tr(course.description), provider: { "@type": "EducationalOrganization", name: "Bright Education School" } }} />
       <section className="course-detail-hero">
         <div className="container">
           <Link className="back-link" to="/#courses"><FiArrowLeft /> {tr("Barcha kurslar")}</Link>
@@ -45,6 +48,15 @@ const CourseDetail = () => {
               <img src={course.img} alt={tr(course.title)} />
               <div className="detail-price"><small>{tr("Oylik to‘lov")}</small><strong>{tr(course.price)}</strong></div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section active-groups-section">
+        <div className="container">
+          <div className="section-heading section-heading--split"><div><span className="section-kicker">{tr("Yangi guruhlar")}</span><h2>{tr("Boshlanish sanasi va bo‘sh joylar")}</h2></div><p>{tr("Jadval va joylar namunaviy. Haqiqiy guruh ma’lumotlarini administrator yangilaydi.")}</p></div>
+          <div className="active-groups-grid">
+            {(course.groups || []).map((group) => <article className="active-group" key={group.name}><div className="active-group__top"><span>{group.name}</span><strong>{tr(group.seats)}</strong></div><div><FiUsers /><span><small>{tr("Yosh")}</small><b>{tr(group.age)}</b></span></div><div><FiClock /><span><small>{tr("Jadval")}</small><b>{tr(group.schedule)}</b></span></div><div><FiCalendar /><span><small>{tr("Boshlanish")}</small><b>{tr(group.startDate)}</b></span></div><div><FiMapPin /><span><small>{tr("Filial")}</small><b>{tr(group.branch)}</b></span></div><Link className="button button--dark" to={`/?course=${course.id}#aloqa`}>{tr("Joyni band qilish")} <FiArrowRight /></Link></article>)}
           </div>
         </div>
       </section>

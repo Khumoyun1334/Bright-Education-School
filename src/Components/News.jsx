@@ -1,10 +1,36 @@
+import { useEffect, useState } from "react";
 import { FiArrowUpRight, FiBell, FiCalendar } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { news } from "../data/news";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import { useContent } from "../context/contentContext";
+import { getPushErrorMessage, getPushStatus, subscribeToNewsPush, unsubscribeFromNewsPush } from "../services/pushService";
 
 const News = () => {
   const { t, tr } = useSitePreferences();
+  const { content: { news } } = useContent();
+  const [pushStatus, setPushStatus] = useState("checking");
+  const [pushMessage, setPushMessage] = useState("");
+
+  useEffect(() => { let active = true; const refresh = () => { void getPushStatus().then((status) => { if (active) setPushStatus(status); }); }; refresh(); window.addEventListener("bright-push-change", refresh); return () => { active = false; window.removeEventListener("bright-push-change", refresh); }; }, []);
+
+  const togglePush = async () => {
+    setPushMessage(""); setPushStatus("loading");
+    try {
+      const wasSubscribed = await getPushStatus() === "subscribed";
+      if (wasSubscribed) { await unsubscribeFromNewsPush(); setPushStatus("idle"); setPushMessage(tr("Bildirishnomalar o‘chirildi.")); }
+      else { await subscribeToNewsPush(); setPushStatus("subscribed"); setPushMessage(tr("Tayyor! Yangi yangilik chiqqanda bildirishnoma olasiz.")); }
+    } catch (error) {
+      const nextStatus = await getPushStatus();
+      setPushStatus(nextStatus);
+      setPushMessage(tr(getPushErrorMessage(error)));
+    }
+  };
+
+  const pushLabel = {
+    checking: "Tekshirilmoqda...", loading: "Kutilmoqda...", subscribed: "Bildirishnomalar yoqilgan", denied: "Ruxsat bloklangan",
+    insecure: "HTTPS orqali oching", unsupported: "Qurilma qo‘llamaydi", "not-configured": "Push sozlanmagan", idle: t("news.notify"),
+  }[pushStatus];
+  const pushDisabled = ["checking", "loading", "denied", "insecure", "unsupported", "not-configured"].includes(pushStatus);
   return (
   <section id="news" className="section news-section">
     <div className="container">
@@ -37,7 +63,7 @@ const News = () => {
       <div className="news-subscribe">
         <span><FiBell aria-hidden="true" /></span>
         <div><strong>{t("news.subscribe")}</strong><p>{t("news.subscribeText")}</p></div>
-        <Link className="button button--dark" to="/#aloqa">{t("news.notify")} <FiArrowUpRight aria-hidden="true" /></Link>
+        <div className="push-subscribe-action"><button className={`button button--dark ${pushStatus === "subscribed" ? "push-active" : ""}`} type="button" onClick={togglePush} disabled={pushDisabled}>{pushLabel} <FiBell aria-hidden="true" /></button>{pushMessage && <small role="status">{pushMessage}</small>}</div>
       </div>
     </div>
   </section>

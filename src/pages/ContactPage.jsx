@@ -1,13 +1,17 @@
 import { FiArrowRight, FiClock, FiMapPin, FiPhoneCall } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import Aloqa from "../Components/Aloqa";
-import { admins, phoneHref } from "../data/contacts";
+import { phoneHref } from "../data/contacts";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import Seo from "../Components/Seo";
+import { useContent } from "../context/contentContext";
 
 const ContactPage = () => {
   const { tr } = useSitePreferences();
+  const { content: { admins, settings } } = useContent();
   return (
   <main className="contact-page">
+    <Seo title={tr("Kontakt va manzil")} description={tr("Bright Education administratorlari, ish vaqti, telefon raqamlari va markaz manzili.")} path="/contact" />
     <section className="contact-page-hero">
       <div className="container contact-page-hero__grid">
         <div>
@@ -49,11 +53,11 @@ const ContactPage = () => {
           <div className="location-copy">
             <span className="location-icon"><FiMapPin /></span>
             <span className="section-kicker">{tr("Manzilimiz")}</span>
-            <h2>{tr("Rishton shahrida sizni kutamiz.")}</h2>
+            <h2>{tr(settings.addressTitle)}</h2>
             <p>{tr("Markazga tashrif buyurib, o‘quv muhiti bilan yaqindan tanishing va bepul maslahat oling.")}</p>
-            <Link className="button button--dark" to="https://www.google.com/maps?q=Rishton%20Tibbiyot%20Texnikumi" target="_blank" rel="noreferrer">{tr("Xaritada ochish")} <FiArrowRight /></Link>
+            <Link className="button button--dark" to={`https://www.google.com/maps?q=${encodeURIComponent(settings.mapQuery)}`} target="_blank" rel="noreferrer">{tr("Xaritada ochish")} <FiArrowRight /></Link>
           </div>
-          <iframe title="Bright Education manzili" src="https://www.google.com/maps?q=Rishton%20Tibbiyot%20Texnikumi&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+          <iframe title="Bright Education manzili" src={`https://www.google.com/maps?q=${encodeURIComponent(settings.mapQuery)}&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
         </div>
       </div>
     </section>

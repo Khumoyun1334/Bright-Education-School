@@ -106,7 +106,7 @@ const TrustProof = () => {
               </article>
             ))}
           </div>
-          <Link className="button button--dark" to="/contact">{tr("Hujjatlar va shartlarni so‘rash")} <FiArrowUpRight /></Link>
+          <Link className="button button--dark" to="/documents">{tr("Hujjatlar va shartlarni ko‘rish")} <FiArrowUpRight /></Link>
         </div>
       </div>
     </section>

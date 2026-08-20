@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { FiMaximize2, FiX } from "react-icons/fi";
-import { gallery } from "../data/gallery";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import { useContent } from "../context/contentContext";
 
 const Gallery = () => {
   const [selected, setSelected] = useState(null);
   const { tr } = useSitePreferences();
+  const { content: { gallery } } = useContent();
 
   useEffect(() => {
     if (!selected) return undefined;

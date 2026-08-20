@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FiArrowUpRight, FiBookOpen, FiSearch, FiUser, FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { courses } from "../data/courses";
-import { news } from "../data/news";
-import { team } from "../data/team";
 import { useSitePreferences } from "../context/sitePreferencesContext";
+import { useContent } from "../context/contentContext";
 
 const normalize = (value) => value
   .toLocaleLowerCase()
@@ -18,19 +16,22 @@ const staticSections = [
   { title: "Markaz qoidalari", description: "Telefon, intizom, davomat va markazning ichki tartibi", href: "/#rules", keywords: "правила телефон дисциплина rules phone" },
   { title: "O‘quvchilar natijalari", description: "O‘quvchilar yutuqlari, sertifikatlar va mandat natijalari", href: "/#results", keywords: "natija mandat result результат сертификат" },
   { title: "Bog‘lanish va manzil", description: "Administratorlar telefon raqamlari, manzil va bepul maslahat", href: "/contact", keywords: "kontakt telefon admin manzil contact address контакты адрес" },
+  { title: "Haftalik mock test natijalari", description: "To‘liq ism-familiya orqali haftalik natijani tekshirish", href: "/mandate", keywords: "mock test shanba ism familiya natija student result результат" },
+  { title: "Rasmiy hujjatlar", description: "Litsenziya, shartnoma va markaz ichki qoidalari", href: "/documents", keywords: "hujjat litsenziya shartnoma document license документы лицензия" },
 ];
 
 const SearchDialog = ({ open, onClose }) => {
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
   const { t, tr } = useSitePreferences();
+  const { content: { courses, news, team } } = useContent();
 
   const searchIndex = useMemo(() => [
     ...courses.map((course) => ({ type: "course", title: tr(course.title), description: tr(course.description), href: `/courses/${course.id}`, keywords: `${course.title} ${tr(course.title)} ${course.eyebrow} ${tr(course.eyebrow)} ${course.teacher.name} ${course.skills.join(" ")} course courses курс курсы kurs kurslar` })),
     ...team.map((member) => ({ type: "team", title: member.name, description: tr(member.role), href: "/#team", keywords: `${member.role} ${tr(member.role)} ${member.description} ${tr(member.description)} ${member.tag} ${member.type} xodim xodimlar oqituvchi oqituvchilar o'qituvchi o'qituvchilar teacher teachers staff преподаватель преподаватели сотрудник сотрудники` })),
     ...news.map((item) => ({ type: "news", title: tr(item.title), description: tr(item.description), href: `/news/${item.id}`, keywords: `${item.title} ${tr(item.title)} ${item.category} ${tr(item.category)} ${item.status} ${item.date} yangilik mandat news новость группа` })),
     ...staticSections.map((item) => ({ ...item, title: tr(item.title), description: tr(item.description), type: "section" })),
-  ], [tr]);
+  ], [courses, news, team, tr]);
 
   const results = useMemo(() => {
     const terms = normalize(query).trim().split(/\s+/).filter((term) => term && !stopWords.has(term));
